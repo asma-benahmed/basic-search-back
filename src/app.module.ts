@@ -3,9 +3,23 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CoursesModule } from './courses/courses.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [ CoursesModule, MongooseModule.forRoot('mongodb+srv://asmabena7med:c2etiNQ5PC9GsQ9F@cluster0.ttt4jvv.mongodb.net/basic-search?retryWrites=true&w=majority')],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: [`.env`],
+      isGlobal: true,
+    }),
+    CoursesModule,
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('DB_URL'),
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

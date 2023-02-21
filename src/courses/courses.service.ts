@@ -34,7 +34,7 @@ export class CoursesService {
     return result;
   }
 
-  async findById(data) {
+  async findById(data: any) {
     try {
       const result = await this.courseModel.findById(data.id);
       return result;
@@ -43,17 +43,13 @@ export class CoursesService {
     }
   }
 
-  async filterData(data) {
+  async filterData(data: any) {
     try {
-      // const skip = data.skip || 0;
       const result = await this.courseModel.find({
         title: { $regex: data.search_query.replace('%', ' '), $options: 'i' },
       });
-      // .limit(6)
-      // .skip(data.skip || 0);
       return {
         result,
-        // count: total,
       };
     } catch (error) {
       return error;
